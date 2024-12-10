@@ -28,7 +28,7 @@ type Opts struct {
 	ttlHigh         uint32
 	zones           []string
 	geoDataFilePath string
-	geoDataField    []string
+	geoDataFields   [][]string
 }
 
 var (
@@ -47,7 +47,7 @@ func NewGatewayOpts(annotation, apex, geoDataFilePath, geoDataField string, ttlL
 		ttlHigh:         ttlHighDefault,
 		hostmaster:      defaultHostmaster,
 		geoDataFilePath: defaultGeoDataFilePath,
-		geoDataField:    strings.Split(defaultGeoDataField, "."),
+		geoDataFields:   [][]string{strings.Split(defaultGeoDataField, ".")},
 	}
 	if apex != "" {
 		opts.apex = apex
@@ -62,7 +62,11 @@ func NewGatewayOpts(annotation, apex, geoDataFilePath, geoDataField string, ttlL
 		opts.geoDataFilePath = geoDataFilePath
 	}
 	if geoDataField != "" {
-		opts.geoDataField = strings.Split(geoDataField, ".")
+		opts.geoDataFields = make([][]string, 0)
+		fields := strings.Split(geoDataField, ",")
+		for _, field := range fields {
+			opts.geoDataFields = append(opts.geoDataFields, strings.Split(field, "."))
+		}
 	}
 	opts.annotation = annotation
 	opts.zones = zones

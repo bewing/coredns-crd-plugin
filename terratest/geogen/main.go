@@ -35,26 +35,50 @@ func main() {
 	}
 	writer, _ := mmdbwriter.New(
 		mmdbwriter.Options{
-			DatabaseType: "Test-IP-DB",
-			RecordSize:   24,
-			IPVersion:    4,
+			DatabaseType:            "IMC-GEOIP-COUNTRY",
+			RecordSize:              24,
+			IPVersion:               4,
+			IncludeReservedNetworks: true,
 		},
 	)
-	_, absaSDCNet, _ := net.ParseCIDR("192.200.1.0/24")
-	_, absa270Net, _ := net.ParseCIDR("192.200.2.0/24")
-
-	absaSDCData := mmdbtype.Map{
-		"datacenter": mmdbtype.String("site1"),
+	_, AU, _ := net.ParseCIDR("10.64.0.0/10")
+	_, US, _ := net.ParseCIDR("10.192.0.0/10")
+	_, IN1, _ := net.ParseCIDR("10.142.0.0/15")
+	_, IN2, _ := net.ParseCIDR("10.144.0.0/15")
+	_, IN3, _ := net.ParseCIDR("10.146.0.0/16")
+	_, NL, _ := net.ParseCIDR("10.128.0.0/10")
+	AUData := mmdbtype.Map{
+		"country": mmdbtype.String("au"),
+		"region":  mmdbtype.String("apac"),
+	}
+	USData := mmdbtype.Map{
+		"country": mmdbtype.String("us"),
+		"region":  mmdbtype.String("amer"),
+	}
+	INData := mmdbtype.Map{
+		"country": mmdbtype.String("in"),
+	}
+	NLData := mmdbtype.Map{
+		"country": mmdbtype.String("nl"),
+		"region":  mmdbtype.String("emea"),
 	}
 
-	absa270Data := mmdbtype.Map{
-		"datacenter": mmdbtype.String("site2"),
-	}
-
-	if err := writer.InsertFunc(absaSDCNet, inserter.TopLevelMergeWith(absaSDCData)); err != nil {
+	if err := writer.InsertFunc(AU, inserter.TopLevelMergeWith(AUData)); err != nil {
 		log.Fatal(err)
 	}
-	if err := writer.InsertFunc(absa270Net, inserter.TopLevelMergeWith(absa270Data)); err != nil {
+	if err := writer.InsertFunc(US, inserter.TopLevelMergeWith(USData)); err != nil {
+		log.Fatal(err)
+	}
+	if err := writer.InsertFunc(NL, inserter.TopLevelMergeWith(NLData)); err != nil {
+		log.Fatal(err)
+	}
+	if err := writer.InsertFunc(IN1, inserter.TopLevelMergeWith(INData)); err != nil {
+		log.Fatal(err)
+	}
+	if err := writer.InsertFunc(IN2, inserter.TopLevelMergeWith(INData)); err != nil {
+		log.Fatal(err)
+	}
+	if err := writer.InsertFunc(IN3, inserter.TopLevelMergeWith(INData)); err != nil {
 		log.Fatal(err)
 	}
 
